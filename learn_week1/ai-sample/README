@@ -1,0 +1,19 @@
+This is basic sample for using some popular AI model
+Modules:
+- Ask Geniny
+- Ask OpenAI
+- Summary pdf file with Gemini
+
+Prerequisites
+Python 3.12.x (recommended for compatibility)
+
+Web Application
+ - Activate the virtual environment (located at project root):
+```# From the project root directory
+.\myenv\Scripts\Activate.ps1```
+ - Install dependencies (if not already installed):
+`pip install -r requirements.txt`
+- Start the development server: 
+`python app.py`
+- The web application will be available at http://127.0.0.1:5000
+

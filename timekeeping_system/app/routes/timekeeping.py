@@ -4,6 +4,7 @@ from app.core.database import get_database, get_employee_collection, get_timekee
 from app.models.timekeeping import serialize_timekeeping
 from app.services.csv_loader import load_timekeeping_from_csv
 from app.services.ai_gemini_service import make_request
+import requests
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -26,7 +27,14 @@ async def upload_timekeeping_csv(request: Request, file: UploadFile = File(...))
 
 @router.post("/timekeeping/report")
 async def make_report_invalid_working_hour(request: Request, file: UploadFile = File(...)):
-    result = make_request(await file.read())
-    message="Analyze and report has done"
-    return templates.TemplateResponse("timekeeping.html", {"request": request, 
-                                                           "timekeeping": None, "message": message, "report_msg": result})
+    url = "http://127.0.0.1:10000/prompt"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "prompt": "Find employees with full attendance on 2025-07-26"
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    print("Status code:", response.status_code)
+    print("Response JSON:", response.json())

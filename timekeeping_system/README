@@ -1,0 +1,12 @@
+This is a website about timekeeping system
+
+Prerequisites
+Python 3.12.x (recommended for compatibility)
+
+Web Application
+ - Activate the virtual environment (located at project root):
+```# From the project root directory
+.\venv\Scripts\Activate.ps1```
+ - Install dependencies (if not already installed):`pip install -r requirements.txt`
+ - Start the development server: `uvicorn app.main:app --reload`
+ - The web application will be available at http://127.0.0.1:8000

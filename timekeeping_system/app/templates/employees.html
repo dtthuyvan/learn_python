@@ -1,0 +1,30 @@
+<body>
+    <h1>Employee List</h1>
+
+    {% if message %}
+    <p style="color: green;">{{ message }}</p>
+    {% endif %}
+
+    <form action="/employees/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Upload CSV</button>
+    </form>
+
+    <br>
+
+    <table border="1">
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Date of Birth</th><th>Team</th></tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr>
+                <td>{{ emp.id }}</td>
+                <td>{{ emp.name }}</td>
+                <td>{{ emp.dob }}</td>
+                <td>{{ emp.team }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>

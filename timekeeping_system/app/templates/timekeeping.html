@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timekeeping</title>
+</head>
+<body>
+    <h1>Employee Timekeeping</h1>
+
+    {% if message %}
+    <p style="color: green;">{{ message }}</p>
+    {% endif %}
+
+    <form action="/timekeeping/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Upload Timekeeping CSV</button>
+    </form>
+
+    <br>
+
+    <table border="1">
+        <thead>
+            <tr><th>Name</th><th>Date</th><th>Check-in</th><th>Check-out</th></tr>
+        </thead>
+        <tbody>
+            {% for t in timekeeping %}
+            <tr>
+                <td>{{ t.name }}</td>
+                <td>{{ t.day }}</td>
+                <td>{{ t.checkin }}</td>
+                <td>{{ t.checkout }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

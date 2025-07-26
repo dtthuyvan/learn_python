@@ -1,1 +1,6 @@
 *.env
+/timekeeping_system/app/core/__pycache__
+/timekeeping_system/app/models/__pycache__
+/timekeeping_system/app/routes/__pycache__
+/timekeeping_system/app/__pycache__
+/timekeeping_system/app/services/__pycache__

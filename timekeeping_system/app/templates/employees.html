@@ -14,7 +14,13 @@
 
     <table border="1">
         <thead>
-            <tr><th>ID</th><th>Name</th><th>Date of Birth</th><th>Team</th></tr>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Team</th>
+                <th>Gender</th>
+            </tr>
         </thead>
         <tbody>
             {% for emp in employees %}
@@ -23,6 +29,7 @@
                 <td>{{ emp.name }}</td>
                 <td>{{ emp.dob }}</td>
                 <td>{{ emp.team }}</td>
+                <td>{{ emp.gender }}</td>
             </tr>
             {% endfor %}
         </tbody>

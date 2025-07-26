@@ -9,10 +9,11 @@ def load_employees_from_csv(file: IO):
         name = row.get("Name")
         dob = row.get("Dob")
         team = row.get("Team")
+        gender = row.get("Gender")
         if name and dob:
             db = get_database()
             employee_collection = get_employee_collection(db)
-            employee_collection.insert_one({"name": name, "dob": dob, "team": team})
+            employee_collection.insert_one({"name": name, "dob": dob, "team": team, "gender": gender})
             inserted += 1
     return inserted
 

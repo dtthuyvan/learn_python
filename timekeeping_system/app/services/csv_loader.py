@@ -2,7 +2,7 @@ import csv
 from typing import IO
 from app.core.database import get_database, get_employee_collection, get_timekeeping_tracking_collection
 
-def load_employees_from_csv(file):
+def load_employees_from_csv(file: IO):
     reader = csv.DictReader(file.decode("utf-8").splitlines())
     inserted = 0
     for row in reader:

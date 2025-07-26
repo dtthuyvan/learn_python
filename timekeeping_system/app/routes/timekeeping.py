@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 from app.core.database import get_database, get_employee_collection, get_timekeeping_tracking_collection
 from app.models.timekeeping import serialize_timekeeping
 from app.services.csv_loader import load_timekeeping_from_csv
+from app.services.ai_gemini_service import make_request
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -22,3 +23,10 @@ async def upload_timekeeping_csv(request: Request, file: UploadFile = File(...))
     data = [serialize_timekeeping(t) for t in timekeeping_collection.find()]
     message = f"Added {inserted} timekeeping recorded from CSV"
     return templates.TemplateResponse("timekeeping.html", {"request": request, "timekeeping": data, "message": message})
+
+@router.post("/timekeeping/report")
+async def make_report_invalid_working_hour(request: Request, file: UploadFile = File(...)):
+    result = make_request(await file.read())
+    message="Analyze and report has done"
+    return templates.TemplateResponse("timekeeping.html", {"request": request, 
+                                                           "timekeeping": None, "message": message, "report_msg": result})

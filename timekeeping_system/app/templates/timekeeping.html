@@ -15,8 +15,13 @@
         <button type="submit">Upload Timekeeping CSV</button>
     </form>
 
-    <br>
+    <form action="/timekeeping/report" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Upload And make report of working hours</button>
+    </form>
 
+    <br>
+    {% if timekeeping %}
     <table border="1">
         <thead>
             <tr><th>Name</th><th>Date</th><th>Check-in</th><th>Check-out</th></tr>
@@ -32,5 +37,12 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
+    {% if report_msg %}
+        <div class="result">
+        <h2>List of employees have not enough working time hours:</h2>
+        <pre>{{ report_msg }}</pre>
+    </div>
+    {% endif %}
 </body>
 </html>

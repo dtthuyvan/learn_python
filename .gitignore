@@ -4,3 +4,6 @@
 /timekeeping_system/app/routes/__pycache__
 /timekeeping_system/app/__pycache__
 /timekeeping_system/app/services/__pycache__
+/.venv
+/timekeeping_system/a2a/agents/full_attendance_agent/__pycache__
+/timekeeping_system/a2a/agents/gender_count_agent/__pycache__

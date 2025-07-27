@@ -1,120 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timekeeping system</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&display=swap');
-        
-        body {
-            font-family: sans-serif;
-            background-color: #f7f9fc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timekeeping System</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&display=swap');
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .clock-hand {
+      transform-origin: center;
+      animation: rotate 60s linear infinite;
+    }
+    .icon-group {
+      animation: float 6s ease-in-out infinite;
+    }
+    .icon-group:nth-child(2) { animation-delay: -1.5s; }
+    .icon-group:nth-child(3) { animation-delay: -3s; }
+    .icon-group:nth-child(4) { animation-delay: -4.5s; }
 
-        .container {
-            text-align: center;
-            padding: 40px;
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            max-width: 90%;
-            width: 600px;
-        }
-
-        h1 {
-            color: #005f73;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        svg {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-        }
-
-        .caption {
-            margin-top: 30px;
-            color: #555;
-            font-size: 0.9rem;
-        }
-
-        /* Animation */
-        .clock-hand {
-            transform-origin: center;
-            animation: rotate 60s linear infinite;
-        }
-        .icon-group {
-            animation: float 6s ease-in-out infinite;
-        }
-        .icon-group:nth-child(2) { animation-delay: -1.5s; }
-        .icon-group:nth-child(3) { animation-delay: -3s; }
-        .icon-group:nth-child(4) { animation-delay: -4.5s; }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-    </style>
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Timekeeping system</h1>
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <!-- Central Element -->
-            <circle cx="100" cy="100" r="40" fill="#e0f7fa" />
-            <circle cx="100" cy="100" r="35" fill="#b2ebf2" />
-            
-            <!-- Clock hands -->
-            <line x1="100" y1="100" x2="100" y2="75" stroke="#0077b6" stroke-width="2" stroke-linecap="round" class="clock-hand" style="animation-duration: 12s;"/>
-            <line x1="100" y1="100" x2="120" y2="100" stroke="#0077b6" stroke-width="2" stroke-linecap="round" class="clock-hand"/>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-3xl text-center">
+    <h1 class="text-3xl font-bold text-blue-800 mb-6">⏰ Timekeeping System</h1>
 
-            <!-- Icons around -->
-            <!-- Icon 1: User/Employee -->
-            <g class="icon-group" transform="translate(30, 30)">
-                <circle cx="0" cy="0" r="15" fill="#ffcdd2" />
-                <circle cx="0" cy="-3" r="5" fill="#fff"/>
-                <path d="M -8 8 Q 0 0 8 8" fill="none" stroke="#fff" stroke-width="2"/>
-            </g>
+    <div class="flex justify-center mb-6">
+      <svg viewBox="0 0 200 200" class="w-64 h-64" xmlns="http://www.w3.org/2000/svg">
+        <!-- Central Element -->
+        <circle cx="100" cy="100" r="40" fill="#e0f7fa" />
+        <circle cx="100" cy="100" r="35" fill="#b2ebf2" />
 
-            <!-- Icon 2: Calendar -->
-            <g class="icon-group" transform="translate(140, 30)">
-                <rect x="-12" y="-12" width="24" height="24" rx="4" fill="#c8e6c9" />
-                <rect x="-12" y="-6" width="24" height="2" fill="#fff"/>
-                <circle cx="-6" cy="3" r="1.5" fill="#fff"/>
-                <circle cx="0" cy="3" r="1.5" fill="#fff"/>
-                <circle cx="6" cy="3" r="1.5" fill="#fff"/>
-            </g>
+        <!-- Clock hands -->
+        <line x1="100" y1="100" x2="100" y2="75" stroke="#0077b6" stroke-width="2" stroke-linecap="round" class="clock-hand" style="animation-duration: 12s;" />
+        <line x1="100" y1="100" x2="120" y2="100" stroke="#0077b6" stroke-width="2" stroke-linecap="round" class="clock-hand" />
 
-            <!-- Icon 3: Report/Chart -->
-            <g class="icon-group" transform="translate(30, 140)">
-                <rect x="-12" y="-12" width="24" height="24" rx="4" fill="#b3e5fc" />
-                <line x1="-8" y1="8" x2="-8" y2="-5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                <line x1="0" y1="8" x2="0" y2="0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                <line x1="8" y1="8" x2="8" y2="-8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </g>
+        <!-- Icons around -->
+        <!-- User -->
+        <g class="icon-group" transform="translate(30, 30)">
+          <circle cx="0" cy="0" r="15" fill="#ffcdd2" />
+          <circle cx="0" cy="-3" r="5" fill="#fff"/>
+          <path d="M -8 8 Q 0 0 8 8" fill="none" stroke="#fff" stroke-width="2"/>
+        </g>
 
-            <!-- Icon 4: Check-in/Location -->
-            <g class="icon-group" transform="translate(140, 140)">
-                <path d="M 0 -12 C -8 -12 -12 -8 -12 0 C -12 8 0 12 0 12 S 12 8 12 0 C 12 -8 8 -12 0 -12 Z" fill="#d1c4e9"/>
-                <circle cx="0" cy="-2" r="4" fill="#fff"/>
-            </g>
-        </svg>
-        <a href="/employees">Manage Employee</a>
-        <a href="/timekeeping">Manage Timekeeping</a>
+        <!-- Calendar -->
+        <g class="icon-group" transform="translate(140, 30)">
+          <rect x="-12" y="-12" width="24" height="24" rx="4" fill="#c8e6c9" />
+          <rect x="-12" y="-6" width="24" height="2" fill="#fff"/>
+          <circle cx="-6" cy="3" r="1.5" fill="#fff"/>
+          <circle cx="0" cy="3" r="1.5" fill="#fff"/>
+          <circle cx="6" cy="3" r="1.5" fill="#fff"/>
+        </g>
+
+        <!-- Chart -->
+        <g class="icon-group" transform="translate(30, 140)">
+          <rect x="-12" y="-12" width="24" height="24" rx="4" fill="#b3e5fc" />
+          <line x1="-8" y1="8" x2="-8" y2="-5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="0" y1="8" x2="0" y2="0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="8" x2="8" y2="-8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </g>
+
+        <!-- Check-in -->
+        <g class="icon-group" transform="translate(140, 140)">
+          <path d="M 0 -12 C -8 -12 -12 -8 -12 0 C -12 8 0 12 0 12 S 12 8 12 0 C 12 -8 8 -12 0 -12 Z" fill="#d1c4e9"/>
+          <circle cx="0" cy="-2" r="4" fill="#fff"/>
+        </g>
+      </svg>
     </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/employees" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition duration-300">👤 Manage Employees</a>
+      <a href="/timekeeping" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full transition duration-300">🕒 Manage Timekeeping</a>
+    </div>
+  </div>
 </body>
 </html>

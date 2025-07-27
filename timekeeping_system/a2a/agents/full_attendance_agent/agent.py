@@ -35,25 +35,29 @@ def get_full_attendance(date: str) -> List[str]:
     employees = read_employee_data("timesheet.csv")
     jsondata = json.dumps(employees, ensure_ascii=False, indent=2)
     prompt = f"""
-        Below is a list of employee attendance records in JSON format. Each entry includes:
-        - Employee Name
-        - Work Date (format: YYYY-MM-DD)
-        - Check-in Time (format: HH:mm)
-        - Check-out Time (format: HH:mm)
+You are given a list of employee attendance records in JSON format. Each record includes:
+- Employee Name
+- Work Date (format: DD/MM/YYYY)
+- Check-in Time (format: H:MM AM/PM)
+- Check-out Time (format: H:MM AM/PM)
 
-        Your task:
-        1. Analyze the data and find the employees who worked full hours on the date "target_date". That means their check-out time minus check-in time must be greater than or equal to 8 hours.
-        2. If no employee meets the condition, respond with exactly this sentence: "No one worked full hours."
-        3. If there are any, return a list of employee names who worked full hours on that date.
+Your task:
+1. Use the target date: "07/07/2025"
+2. For each record on that date, calculate the total hours worked (check-out minus check-in).
+3. If the total is **greater than or equal to 8 hours**, include the employee's name.
+4. If no employee meets the condition, respond with **exactly**: `No one worked full hours.`
 
-        JSON data:
+Respond only with valid JSON in the format:
+{{list_of_names}}
+No explanation, no formatting, no extra text, without ``` and json text.
 
-        ```json
-        {jsondata}
-        """
+Here is input data:
+{jsondata}
+"""
     model = GenerativeModel("gemini-2.5-flash")
     response = model.generate_content(prompt)
     print(response.text)
+    return response.text
 
 
 full_attendance_agent = LlmAgent(
@@ -64,10 +68,8 @@ full_attendance_agent = LlmAgent(
 The user will provide a JSON query like {"query": "employees with full attendance on 2025-07-26"}.
 1. Extract the date from the query.
 2. Use the `get_full_attendance` tool to get the list of employees.
-3. Respond with JSON: {"employees": list[str]}.
 """,
     tools=[get_full_attendance],
     input_schema=EmployeeQueryInput,
     output_key="full_attendance_result",
 )
-

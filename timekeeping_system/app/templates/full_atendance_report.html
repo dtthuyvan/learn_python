@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Full Attendance Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-xl w-full text-center">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">✅ Full Attendance Report</h1>
+
+      <div class="bg-green-100 text-green-800 p-6 rounded-xl shadow text-lg whitespace-pre-line">
+        {{ full_attendance }}
+      </div>
+
+      <div class="mt-6 text-gray-500 text-sm">
+        Report Date: <strong>{{ report_date }}</strong>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+`

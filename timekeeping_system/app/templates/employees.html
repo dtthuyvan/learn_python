@@ -29,6 +29,13 @@
       </button>
     </form>
 
+    <form action="/employees/report" method="post" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <input hidden type="file" name="file" accept=".csv" class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-auto">
+        <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
+          📊 Report Gender
+        </button>
+      </form>
+    </br>
     <div class="overflow-x-auto">
       <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
         <thead class="bg-blue-100 text-blue-800">

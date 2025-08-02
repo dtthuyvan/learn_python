@@ -1,7 +1,6 @@
 import json
 import asyncio
 import os
-import csv
 import sys
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -10,18 +9,17 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from pydantic import BaseModel, Field
-from typing import List, Dict
 import uuid
 from datetime import date
 from fastapi import FastAPI, Request
 import uvicorn
 from fastapi.responses import JSONResponse
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from agents.gender_count_agent.agent import gender_count_agent, GenderCountOutput
-from agents.full_attendance_agent.agent import full_attendance_agent, FullAttendanceOutput
+from agents.gender_count_agent.agent import gender_count_agent
+from agents.full_attendance_agent.agent import full_attendance_agent
+from fastapi.middleware.cors import CORSMiddleware
 
-# --- 0. Configure Google API Key ---
+# --- Configure Google API Key ---
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 if not api_key:
@@ -29,7 +27,7 @@ if not api_key:
 genai.configure(api_key=api_key)
 print("Google API Key configured.")
 
-# --- 1. Define Constants ---
+# ---  Define Constants ---
 APP_NAME = "employee_analysis_app"
 USER_ID = "test_user_789"
 MODEL_NAME = "gemini-1.5-flash"
@@ -39,11 +37,11 @@ SESSION_IDS = {
     "absent_without_leave": f"absent_without_leave_{uuid.uuid4()}"
 }
 
-# --- 2. Define Schemas ---
+# --- Define Schemas ---
 class EmployeeQueryInput(BaseModel):
     query: str = Field(description="User's query related to employee data.")
 
-# --- 6. Set up Session Management and Runner ---
+# --- Set up Session Management and Runner ---
 session_service = InMemorySessionService()
 
 async def create_session_with_check(session_id: str):
@@ -77,10 +75,17 @@ full_attendance_runner = Runner(
 
 def classify_intent_with_gemini(prompt: str) -> str:
     model = genai.GenerativeModel(MODEL_NAME)
-    response = model.generate_content(f"Based on the prompt '{prompt}', classify the task: 'gender_count', 'full_attendance', 'absent_without_leave'. Only return the name of the type.")
+    response = model.generate_content(
+    f"""You are an intelligent router that classifies the user prompt into one of these task types: 
+        - 'gender_count' 
+        - 'full_attendance' 
+        - 'absent_without_leave'.
+        Based on the prompt: '{prompt}', return only the task type name (e.g., 'gender_count') if it clearly matches one of the supported tasks.
+        If none of the supported tasks match, return a brief, context-aware explanation of why the task is unsupported and clearly state that no matching agent is available."""
+    )
     return response.text.strip()
 
-# --- 7. Prompt Analysis and Routing Function ---
+# --- Prompt Analysis and Routing Function ---
 async def analyze_prompt_and_route(prompt: str) -> tuple[Runner, LlmAgent, str, dict]:
     try:
         task = classify_intent_with_gemini(prompt)
@@ -93,12 +98,12 @@ async def analyze_prompt_and_route(prompt: str) -> tuple[Runner, LlmAgent, str, 
             query = {"query": f"employees with full attendance on {today}"}
             return full_attendance_runner, full_attendance_agent, SESSION_IDS["full_attendance"], query
         else:
-            raise ValueError("Could not determine the task from the prompt.")
+            return None, None, "", task
     except Exception as e:
         print(f"Error analyzing prompt: {str(e)}")
         raise
 
-# --- 8. Define Agent Interaction Logic ---
+# --- Define Agent Interaction Logic ---
 async def call_agent_and_print(runner_instance: Runner, agent_instance: LlmAgent, session_id: str, query_json: dict):
     """Sends a query to the agent/runner and prints the result."""
     query_str = json.dumps(query_json)
@@ -150,10 +155,18 @@ async def call_agent_and_print(runner_instance: Runner, agent_instance: LlmAgent
         print(f"Error accessing session state: {str(e)}")
     print("-" * 30)
 
-# --- 9. Main Function ---
+# --- Main Function ---
 async def main():
     await init_sessions()
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8000"],  # Allow your frontend origin
+    allow_credentials=True,
+    allow_methods=["POST", "OPTIONS"],  # Allow POST and OPTIONS (for preflight)
+    allow_headers=["Content-Type"],  # Allow Content-Type header
+)
 
 @app.post("/prompt")
 async def handle_promt(req: Request):
@@ -162,7 +175,9 @@ async def handle_promt(req: Request):
     print(f"\n=== Processing prompt: '{prompt}' ===")
     try:
         runner, agent, session_id, query = await analyze_prompt_and_route(prompt)
-        result = await call_agent_and_print(runner, agent, session_id, query)
+        result = query
+        if (runner):
+            result = await call_agent_and_print(runner, agent, session_id, query)
         return JSONResponse(content=result)
     except Exception as e:
         print(f"Error processing prompt '{prompt}': {str(e)}")

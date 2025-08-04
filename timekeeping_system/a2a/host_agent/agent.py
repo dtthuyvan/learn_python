@@ -17,6 +17,7 @@ from fastapi.responses import JSONResponse
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from agents.gender_count_agent.agent import gender_count_agent
 from agents.full_attendance_agent.agent import full_attendance_agent
+from agents.insufficient_working_time_agent.agent import insufficient_employee_report_agent
 from fastapi.middleware.cors import CORSMiddleware
 
 # --- Configure Google API Key ---
@@ -34,7 +35,8 @@ MODEL_NAME = "gemini-1.5-flash"
 SESSION_IDS = {
     "gender_count": f"gender_count_{uuid.uuid4()}",
     "full_attendance": f"full_attendance_{uuid.uuid4()}",
-    "absent_without_leave": f"absent_without_leave_{uuid.uuid4()}"
+    "absent_without_leave": f"absent_without_leave_{uuid.uuid4()}",
+    "insufficient_time" : f"insufficient_time{uuid.uuid4()}"
 }
 
 # --- Define Schemas ---
@@ -72,6 +74,11 @@ full_attendance_runner = Runner(
     session_service=session_service
 )
 
+insufficient_working_hour_runner = Runner(
+    agent=insufficient_employee_report_agent,
+    app_name=APP_NAME,
+    session_service=session_service
+)
 
 def classify_intent_with_gemini(prompt: str) -> str:
     model = genai.GenerativeModel(MODEL_NAME)
@@ -79,6 +86,7 @@ def classify_intent_with_gemini(prompt: str) -> str:
     f"""You are an intelligent router that classifies the user prompt into one of these task types: 
         - 'gender_count' 
         - 'full_attendance' 
+        - 'insufficient_working_hour'
         - 'absent_without_leave'.
         Based on the prompt: '{prompt}', return only the task type name (e.g., 'gender_count') if it clearly matches one of the supported tasks.
         If none of the supported tasks match, return a brief, context-aware explanation of why the task is unsupported and clearly state that no matching agent is available."""
@@ -97,6 +105,9 @@ async def analyze_prompt_and_route(prompt: str) -> tuple[Runner, LlmAgent, str, 
         elif task == "full_attendance":
             query = {"query": f"employees with full attendance on {today}"}
             return full_attendance_runner, full_attendance_agent, SESSION_IDS["full_attendance"], query
+        elif task == "insufficient_working_hour":
+            query = {"query": "List of employees who have not met the required working hours per day"}
+            return insufficient_working_hour_runner, insufficient_employee_report_agent, SESSION_IDS["insufficient_time"], query
         else:
             return None, None, "", task
     except Exception as e:

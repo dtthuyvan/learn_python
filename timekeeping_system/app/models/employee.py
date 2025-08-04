@@ -4,5 +4,6 @@ def serialize_employee(employee) -> dict:
         "id": str(employee.get("_id", "")),
         "name": employee.get("name", ""),
         "dob": employee.get("dob", ""),
-        "team": employee.get("team", "")
+        "team": employee.get("team", ""),
+        "gender": employee.get("gender", "")
     }

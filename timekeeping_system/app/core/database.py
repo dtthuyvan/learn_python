@@ -31,5 +31,15 @@ def get_timekeeping_tracking_collection(mydb):
     return mycol
 
 
+def get_employee_train_collection(mydb):
+    mycol = mydb["employee_train"]
+    return mycol
+
+
+def get_timesheet_train_collection(mydb):
+    mycol = mydb["timesheet_train"]
+    return mycol
+
+
 if __name__ == "__main__":
     pass

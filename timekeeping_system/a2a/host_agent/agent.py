@@ -19,6 +19,7 @@ from agents.gender_count_agent.agent import gender_count_agent
 from agents.full_attendance_agent.agent import full_attendance_agent
 from agents.insufficient_working_time_agent.agent import insufficient_employee_report_agent
 from fastapi.middleware.cors import CORSMiddleware
+from router import route_dynamic
 
 # --- Configure Google API Key ---
 load_dotenv()
@@ -36,7 +37,9 @@ SESSION_IDS = {
     "gender_count": f"gender_count_{uuid.uuid4()}",
     "full_attendance": f"full_attendance_{uuid.uuid4()}",
     "absent_without_leave": f"absent_without_leave_{uuid.uuid4()}",
-    "insufficient_time" : f"insufficient_time{uuid.uuid4()}"
+    "insufficient_time" : f"insufficient_time{uuid.uuid4()}",
+    "employee_rag": f"employee_rag_{uuid.uuid4()}",
+    "timesheet_rag": f"timesheet_rag_{uuid.uuid4()}",
 }
 
 # --- Define Schemas ---
@@ -185,7 +188,11 @@ async def handle_promt(req: Request):
     prompt = data["prompt"]
     print(f"\n=== Processing prompt: '{prompt}' ===")
     try:
-        runner, agent, session_id, query = await analyze_prompt_and_route(prompt)
+        # First try dynamic RAG routing based on subject
+        runner, agent, session_id, query = route_dynamic(prompt, SESSION_IDS, APP_NAME, session_service)
+        if not runner:
+            # fallback to legacy task-based router
+            runner, agent, session_id, query = await analyze_prompt_and_route(prompt)
         result = query
         if (runner):
             result = await call_agent_and_print(runner, agent, session_id, query)

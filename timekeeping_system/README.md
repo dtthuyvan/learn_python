@@ -70,7 +70,7 @@ timekeeping_system/
 ## 🛠️ Installation
 
 ### Prerequisites
-- Python 3.8+
+- Python 3.12+
 - MongoDB instance
 - Google Gemini API key
 
@@ -102,13 +102,7 @@ timekeeping_system/
 
 ### Main Application (Port 8000)
 ```bash
-cd app
-python main.py
-```
-Or with uvicorn:
-```bash
-cd app
-uvicorn main:app --reload --port 8000
+python ./app/main.py
 ```
 
 ### AI Agent System (Port 10000)
@@ -242,60 +236,3 @@ curl --location 'http://127.0.0.1:10000/prompt' \
 }'
 ```
 
-## 🚀 Deployment
-
-### Production Considerations
-1. **Environment Variables**: Secure API keys and connection strings
-2. **Database Security**: Implement proper MongoDB authentication
-3. **HTTPS**: Use SSL/TLS for production
-4. **Load Balancing**: Consider multiple instances for high availability
-5. **Monitoring**: Implement logging and monitoring solutions
-
-### Docker Support
-```dockerfile
-# Example Dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the documentation
-- Review the code examples
-
-## 🔮 Future Enhancements
-
-- [ ] Real-time notifications
-- [ ] Mobile application
-- [ ] Advanced analytics dashboard
-- [ ] Integration with HR systems
-- [ ] Machine learning model training
-- [ ] Multi-language support
-- [ ] Advanced reporting features
-- [ ] API rate limiting
-- [ ] User authentication system
-- [ ] Audit logging
-
----
-
-**Built with ❤️ using FastAPI, MongoDB, and Google Gemini AI**
-
-*Last updated: December 2024*

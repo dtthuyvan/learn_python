@@ -6,9 +6,9 @@ import json
 
 def analyze_full_time_report(data: list[dict], employees: str):
     load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise ValueError("GEMINI_API_KEY was null. Please setup.")
+        raise ValueError("GOOGLE_API_KEY was null. Please setup.")
 
     config = types.GenerateContentConfig(
             temperature=0,
@@ -62,9 +62,9 @@ def make_request(data: list[dict], original_prompt):
     if not original_prompt:
         return "No prompt"
     load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise ValueError("GEMINI_API_KEY was null. Please setup.")
+        raise ValueError("GOOGLE_API_KEY was null. Please setup.")
 
     config = types.GenerateContentConfig(
             temperature=0,
@@ -72,7 +72,7 @@ def make_request(data: list[dict], original_prompt):
         )
 
     final_results_text = ""
-    chunk_size = 100  
+    chunk_size = 200  
     for i in range(0, len(data), chunk_size):
         chunk_data = data[i:i + chunk_size]
         chunk_json = json.dumps(chunk_data, ensure_ascii=False, indent=2)

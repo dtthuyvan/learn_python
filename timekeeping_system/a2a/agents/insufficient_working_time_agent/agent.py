@@ -39,8 +39,8 @@ def find_insufficient_employee() -> List[str]:
     for record in DATA_TIMEKEEPING:
         i+=1
         try:
-            check_in_str = f"{record['day']} {record['checkin']}"
-            check_out_str = f"{record['day']} {record['checkout']}"
+            check_in_str = f"{record['date']} {record['checkin']}"
+            check_out_str = f"{record['date']} {record['checkout']}"
             
             check_in_time = datetime.strptime(check_in_str, "%d/%m/%Y %I:%M %p")
             check_out_time = datetime.strptime(check_out_str, "%d/%m/%Y %I:%M %p")
@@ -48,7 +48,7 @@ def find_insufficient_employee() -> List[str]:
             
             if duration < timedelta(hours=9.5):
                 time = duration.total_seconds()/3600 - 1.5
-                result = f"{i}. Employee Name: {record['name']} | Date: {record['day']} | Working Time: {time}"
+                result = f"{i}. Employee Name: {record['name']} | Date: {record['date']} | Working Time: {time}"
                 incomplete_workdays.append(result)
 
         except (ValueError, KeyError) as e:

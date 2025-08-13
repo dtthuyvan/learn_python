@@ -41,7 +41,7 @@ async def add_employee(
         }
         
         inserted = 0
-        exists = train_col.find_one({"name": name})
+        exists = employee_collection.find_one({"name": name})
         if not exists:
             result = employee_collection.insert_one(new_employee)
             inserted += 1

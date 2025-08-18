@@ -50,7 +50,7 @@ The response only contains number of male and female, do not include any code, t
     return make_request(data, prompt)
 
 def analyze_report_insufficient(data: list[dict]):
-    prompt = f"""Analyze the following JSon data to find employees who worked **less than** 9.50 hours.
+    prompt = f"""Analyze the following JSon data to find employees who worked **less than** 9 hours.
 Follow these steps exactly:
 1. First, for EACH row in the provided data, calculate the working hours. List out the name, date, and the calculated working hours for all employees.
 2. Second, from the complete list you just created in step 1, filter and create a final, clean list containing ONLY the employees whose working hours are less than 10.

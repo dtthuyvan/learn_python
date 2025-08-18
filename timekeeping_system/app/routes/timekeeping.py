@@ -56,7 +56,7 @@ async def add_timekeeping(
             "checkout": checkout_12h
         }
         
-        result = timekeeping_collection.insert_one(new_timekeeping)
+        #result = timekeeping_collection.insert_one(new_timekeeping)
         train_col = get_timesheet_train_collection(db)
         doc = build_timesheet_embedding_doc(new_timekeeping)
         result = train_col.insert_one(doc)

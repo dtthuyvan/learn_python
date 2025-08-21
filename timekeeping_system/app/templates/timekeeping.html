@@ -13,6 +13,37 @@
     ul>li{
       margin: 20px 0;
     }
+    
+    /* Custom styles for Remove button */
+    .remove-btn {
+      transition: all 0.2s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .remove-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .remove-btn:active {
+      transform: translateY(0);
+    }
+    
+    .remove-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    
+    /* Loading animation */
+    .loading {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen py-10 px-4">
@@ -25,13 +56,35 @@
       </div>
     {% endif %}
 
-    <div class="space-y-6">
-      <form action="/timekeeping/upload" method="post" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+    <!-- Action Buttons -->
+    <div class="mb-6 flex flex-col sm:flex-row items-center gap-4 justify-between">
+      <!-- Add Timekeeping Button -->
+      <a href="/timekeeping/add" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+        ⏰ Add Timekeeping Record
+      </a>
+      
+      <!-- Upload CSV Form -->
+      <form action="/timekeeping/upload" method="post" enctype="multipart/form-data" class="flex items-center gap-4">
         <input type="file" name="file" accept=".csv" required class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-auto">
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
           ⬆️ Upload Timekeeping CSV
         </button>
       </form>
+    </div>
+
+    <!-- Info Box -->
+    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+        </svg>
+        <span class="text-blue-800 text-sm">
+          <strong>Note:</strong> Times are displayed in 12-hour format (AM/PM). Working hours are automatically calculated.
+        </span>
+      </div>
+    </div>
+
+    <div class="space-y-6">
 
       <!-- <form action="/timekeeping/report" method="post" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <input hidden type="file" name="file" accept=".csv" class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-auto">
@@ -75,6 +128,7 @@
               <th class="px-6 py-3 text-left text-sm font-semibold">Check-in</th>
               <th class="px-6 py-3 text-left text-sm font-semibold">Check-out</th>
               <th class="px-6 py-3 text-left text-sm font-semibold">Working Hour</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody class="text-gray-700">
@@ -82,10 +136,19 @@
               <tr class="border-t hover:bg-gray-50">
                 <td class="px-6 py-3">{{ loop.index }}</td>
                 <td class="px-6 py-3">{{ t.name }}</td>
-                <td class="px-6 py-3">{{ t.day }}</td>
+                <td class="px-6 py-3">{{ t.date }}</td>
                 <td class="px-6 py-3">{{ t.checkin }}</td>
                 <td class="px-6 py-3">{{ t.checkout }}</td>
                 <td class="px-6 py-3">{{ t.get('duration') }}</td>
+                <td class="px-6 py-3">
+                  <button 
+                    onclick="deleteTimekeeping('{{ t.id }}', '{{ t.name }}', '{{ t.date }}')"
+                    class="remove-btn bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-all duration-200"
+                    title="Delete timekeeping record for {{ t.name }} on {{ t.date }}"
+                  >
+                    🗑️ Remove
+                  </button>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -100,5 +163,71 @@
       </div>
     {% endif %}
   </div>
+
+  <!-- JavaScript for Delete Timekeeping Functionality -->
+  <script>
+    async function deleteTimekeeping(timekeepingId, employeeName, date) {
+      // Show confirmation popup
+      const confirmMessage = `Are you sure you want to delete timekeeping record for "${employeeName}" on ${date}?\n\nThis action cannot be undone.`;
+      
+      if (!confirm(confirmMessage)) {
+        return; // User cancelled
+      }
+      
+      // Get the button that was clicked
+      const button = event.target;
+      const originalText = button.innerHTML;
+      const originalClass = button.className;
+      
+      try {
+        // Show loading state
+        button.innerHTML = '⏳ Deleting...';
+        button.disabled = true;
+        button.className = 'remove-btn bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed';
+        
+        // Make DELETE request
+        const response = await fetch(`/timekeeping/${timekeepingId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Show success message
+          alert(`Timekeeping record for "${employeeName}" on ${date} has been deleted successfully!`);
+          
+          // Reload the page to refresh the timekeeping list
+          window.location.reload();
+        } else {
+          // Show error message
+          alert(`Error deleting timekeeping record: ${result.message}`);
+          
+          // Reset button state
+          button.innerHTML = originalText;
+          button.disabled = false;
+          button.className = originalClass;
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the timekeeping record. Please try again.');
+        
+        // Reset button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+        button.className = originalClass;
+      }
+    }
+    
+    // Add confirmation for page refresh if there are unsaved changes
+    window.addEventListener('beforeunload', function(e) {
+      // This is just a precaution - you can customize this behavior
+      // e.preventDefault();
+      // e.returnValue = '';
+    });
+  </script>
 </body>
 </html>

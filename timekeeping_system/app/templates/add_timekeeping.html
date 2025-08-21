@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Timekeeping - Timekeeping System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-blue-800 mb-2">⏰ Timekeeping System</h1>
+            <p class="text-gray-600">Add New Timekeeping Record</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-center mb-8">
+            <nav class="flex space-x-4">
+                <a href="/" class="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium">🏠 Home</a>
+                <a href="/employees" class="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium">👥 Employees</a>
+                <a href="/employees/add" class="px-4 py-2 text-purple-600 hover:text-purple-800 font-medium">➕ Add Employee</a>
+                <a href="/timekeeping" class="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium">⏰ Timekeeping</a>
+            </nav>
+        </div>
+
+        <!-- Error Message -->
+        {% if error %}
+        <div class="max-w-md mx-auto mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <span class="block sm:inline">{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Add Timekeeping Form -->
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Add New Timekeeping Record</h2>
+            
+            <form action="/timekeeping/add" method="POST" class="space-y-4">
+                <!-- Employee Name Field -->
+                <div>
+                    <label for="employee_name" class="block text-sm font-medium text-gray-700 mb-1">
+                        Employee Name *
+                    </label>
+                    <select 
+                        id="employee_name" 
+                        name="employee_name" 
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="">Select employee</option>
+                        {% for emp in employees %}
+                        <option value="{{ emp.name }}">{{ emp.name }} ({{ emp.team }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Date Field -->
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">
+                        Date *
+                    </label>
+                    <input 
+                        type="date" 
+                        id="date" 
+                        name="date" 
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                </div>
+
+                <!-- Check-in Time Field -->
+                <div>
+                    <label for="checkin" class="block text-sm font-medium text-gray-700 mb-1">
+                        Check-in Time *
+                    </label>
+                    <input 
+                        type="time" 
+                        id="checkin" 
+                        name="checkin" 
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="08:00"
+                    >
+                </div>
+
+                <!-- Check-out Time Field -->
+                <div>
+                    <label for="checkout" class="block text-sm font-medium text-gray-700 mb-1">
+                        Check-out Time *
+                    </label>
+                    <input 
+                        type="time" 
+                        id="checkout" 
+                        name="checkout" 
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="17:00"
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                        ⏰ Add Timekeeping Record
+                    </button>
+                </div>
+            </form>
+
+            <!-- Back Button -->
+            <div class="mt-4 text-center">
+                <a 
+                    href="/timekeeping" 
+                    class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                    ← Back to Timekeeping List
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Validation Script -->
+        <script>
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const employeeName = document.getElementById('employee_name').value;
+                const date = document.getElementById('date').value;
+                const checkin = document.getElementById('checkin').value;
+                const checkout = document.getElementById('checkout').value;
+
+                if (!employeeName || !date || !checkin || !checkout) {
+                    e.preventDefault();
+                    alert('Please fill in all required fields.');
+                    return false;
+                }
+
+                // Validate that checkout time is after checkin time
+                if (checkin >= checkout) {
+                    e.preventDefault();
+                    alert('Check-out time must be after check-in time.');
+                    return false;
+                }
+
+                // Validate working hours (minimum 1 hour, maximum 16 hours)
+                const checkinTime = new Date(`2000-01-01T${checkin}`);
+                const checkoutTime = new Date(`2000-01-01T${checkout}`);
+                const workingHours = (checkoutTime - checkinTime) / (1000 * 60 * 60);
+                
+                if (workingHours < 1) {
+                    e.preventDefault();
+                    alert('Working time must be at least 1 hour.');
+                    return false;
+                }
+                
+                if (workingHours > 16) {
+                    e.preventDefault();
+                    alert('Working time cannot exceed 16 hours.');
+                    return false;
+                }
+
+                // Validate that date is not in the future
+                const selectedDate = new Date(date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (selectedDate > today) {
+                    e.preventDefault();
+                    alert('Date cannot be in the future.');
+                    return false;
+                }
+
+                // Show confirmation with converted time format
+                const checkin12h = convertTo12Hour(checkin);
+                const checkout12h = convertTo12Hour(checkout);
+                
+                const confirmMessage = `Confirm timekeeping record:\n\n` +
+                    `Employee: ${employeeName}\n` +
+                    `Date: ${date}\n` +
+                    `Check-in: ${checkin} (${checkin12h})\n` +
+                    `Check-out: ${checkout} (${checkout12h})\n` +
+                    `Working hours: ${workingHours.toFixed(2)} hours`;
+                
+                if (!confirm(confirmMessage)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Function to convert 24h to 12h format for display
+            function convertTo12Hour(time24h) {
+                const [hour, minute] = time24h.split(':').map(Number);
+                if (hour === 0) return `12:${minute.toString().padStart(2, '0')} AM`;
+                if (hour < 12) return `${hour}:${minute.toString().padStart(2, '0')} AM`;
+                if (hour === 12) return `12:${minute.toString().padStart(2, '0')} PM`;
+                return `${hour - 12}:${minute.toString().padStart(2, '0')} PM`;
+            }
+
+            // Set default date to today
+            document.addEventListener('DOMContentLoaded', function() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('date').value = today;
+                
+                // Set default times (8:00 AM to 5:00 PM)
+                document.getElementById('checkin').value = '08:00';
+                document.getElementById('checkout').value = '17:00';
+            });
+        </script>
+    </div>
+</body>
+</html>

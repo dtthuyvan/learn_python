@@ -7,3 +7,4 @@
 /.venv
 /timekeeping_system/a2a/agents/full_attendance_agent/__pycache__
 *__pycache__
+*/.vs/*

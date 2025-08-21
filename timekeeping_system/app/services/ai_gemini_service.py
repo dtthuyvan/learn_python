@@ -6,9 +6,9 @@ import json
 
 def analyze_full_time_report(data: list[dict], employees: str):
     load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise ValueError("GEMINI_API_KEY was null. Please setup.")
+        raise ValueError("GOOGLE_API_KEY was null. Please setup.")
 
     config = types.GenerateContentConfig(
             temperature=0,
@@ -50,7 +50,7 @@ The response only contains number of male and female, do not include any code, t
     return make_request(data, prompt)
 
 def analyze_report_insufficient(data: list[dict]):
-    prompt = f"""Analyze the following JSon data to find employees who worked **less than** 9.50 hours.
+    prompt = f"""Analyze the following JSon data to find employees who worked **less than** 9 hours.
 Follow these steps exactly:
 1. First, for EACH row in the provided data, calculate the working hours. List out the name, date, and the calculated working hours for all employees.
 2. Second, from the complete list you just created in step 1, filter and create a final, clean list containing ONLY the employees whose working hours are less than 10.
@@ -62,9 +62,9 @@ def make_request(data: list[dict], original_prompt):
     if not original_prompt:
         return "No prompt"
     load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise ValueError("GEMINI_API_KEY was null. Please setup.")
+        raise ValueError("GOOGLE_API_KEY was null. Please setup.")
 
     config = types.GenerateContentConfig(
             temperature=0,
@@ -72,7 +72,7 @@ def make_request(data: list[dict], original_prompt):
         )
 
     final_results_text = ""
-    chunk_size = 100  
+    chunk_size = 200  
     for i in range(0, len(data), chunk_size):
         chunk_data = data[i:i + chunk_size]
         chunk_json = json.dumps(chunk_data, ensure_ascii=False, indent=2)

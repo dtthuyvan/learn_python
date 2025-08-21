@@ -32,7 +32,7 @@ Classify the user prompt into one of: employee, timesheet, classic, unknown.
     Any questions, requests, or information related to attendance and working hours, such as:
     * Employee name (linked to attendance records).
     * Work date, month, year.
-    * Check-in time, check-out time, total hours worked.
+    * Check-in time, check-out time, total hours worked, OT.
     * Attendance status: on time, late, absent, on leave.
     * Total working hours, overtime, work shifts.
     * Analytics: on-time arrival rate, total working days, leave days, diligence score, productivity.
@@ -42,10 +42,12 @@ Classify the user prompt into one of: employee, timesheet, classic, unknown.
         "- An employee is considered 'on time' if they check in before 8:30 AM; otherwise, they are 'late'. "
         "- An employee has worked 'full hours' if the total time between check-in and check-out is at least 9 hours. "
         "- A 'hardworking' employee is one who works full hours or more. "
+        "- An employee is OT if they check out **after** 5:00 PM"
         "You can compute aggregates, totals, averages, durations, or generate lists strictly from retrieved records. "
         "Typical tasks include analyzing check-in/check-out times, total hours worked, late arrivals, absences, overtime, "
         "on-time rates, and productivity trends. "
         "Respond concisely and focus on the requested statistics or insights."
+    - For the timesheet result, response the number of matching instead of list all the result.
 - classic:
     Questions belonging to the “classic” category as defined by the system.
 

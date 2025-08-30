@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, UploadFile, File, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
-from core.database import get_database, get_employee_collection, get_timekeeping_tracking_collection
+from app.core.database import get_database, get_employee_collection, get_timekeeping_tracking_collection
 from models.employee import serialize_employee, deserialize_employee_id
 from services.csv_loader import load_employees_from_csv, get_employee_train_collection
 import services.ai_gemini_service as gemini_service

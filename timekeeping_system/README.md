@@ -213,8 +213,8 @@ python agent.py
 ### Database Collections
 - `employee`: Employee information
 - `timekeeping_tracking`: Time tracking records
-- `employee_train`: Training data for AI models
-- `timesheet_train`: Timesheet training data
+- `x_employee_train`: Training data for AI models
+- `x_timesheet_train`: Timesheet training data
 
 ## 🧪 Testing
 

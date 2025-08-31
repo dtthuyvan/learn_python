@@ -15,7 +15,7 @@ class EmployeeRagInput(BaseModel):
 def search_employee(query: str) -> List[Dict[str, Any]]:
     embedding = embed_text(query)
     results = vector_search(
-        collection_name="employee_train",
+        collection_name="x_employee_train",
         query_embedding=embedding,
         top_k=200,
         embedding_field="embedding",

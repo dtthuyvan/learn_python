@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 from app.core.database import get_database, get_employee_collection, get_timekeeping_tracking_collection
 from models.employee import serialize_employee, deserialize_employee_id
-from services.csv_loader import load_employees_from_csv, get_employee_train_collection
+from services.csv_loader import load_employees_from_csv, get_x_employee_train_collection
 import services.ai_gemini_service as gemini_service
 from services.embedding_service import build_employee_embedding_doc
 
@@ -46,7 +46,7 @@ async def add_employee(
         #    result = employee_collection.insert_one(new_employee)
         #    inserted += 1
         
-        train_col = get_employee_train_collection(db)
+        train_col = get_x_employee_train_collection(db)
         exists = train_col.find_one({"name": name})
         if not exists:
             doc = build_employee_embedding_doc(new_employee)
@@ -100,7 +100,7 @@ async def delete_employee(employee_id: str):
         if result.deleted_count > 0:
             # Delete from training collection if exists
             try:
-                train_col = get_employee_train_collection(db)
+                train_col = get_x_employee_train_collection(db)
                 train_col.delete_many({"name": existing_employee.get("name", "")})
             except Exception as train_error:
                 # Log training deletion error but don't fail the main deletion

@@ -15,7 +15,7 @@ class TimesheetRagInput(BaseModel):
 def search_timesheet(query: str) -> List[Dict[str, Any]]:
     embedding = embed_text(query)
     results = vector_search(
-        collection_name="timesheet_train",
+        collection_name="x_timesheet_train",
         query_embedding=embedding,
         top_k=100,
         embedding_field="embedding",

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, UploadFile, File, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
-from core.database import get_database, get_timekeeping_tracking_collection, get_employee_collection, get_timesheet_train_collection
+from core.database import get_database, get_timekeeping_tracking_collection, get_employee_collection, get_x_timesheet_train_collection
 from models.timekeeping import serialize_timekeeping, deserialize_timekeeping_id
 from models.employee import serialize_employee
 from services.csv_loader import load_timekeeping_from_csv
@@ -59,7 +59,7 @@ async def add_timekeeping(
         }
         
         #result = timekeeping_collection.insert_one(new_timekeeping)
-        train_col = get_timesheet_train_collection(db)
+        train_col = get_x_timesheet_train_collection(db)
         doc = build_timesheet_embedding_doc(new_timekeeping)
         result = train_col.insert_one(doc)
 

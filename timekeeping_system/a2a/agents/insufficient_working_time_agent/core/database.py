@@ -22,12 +22,12 @@ def get_database():
 
 
 def get_employee_collection(mydb):
-    mycol = mydb["employee_train"]
+    mycol = mydb["x_employee_train"]
     return mycol
 
 
 def get_timekeeping_tracking_collection(mydb):
-    mycol = mydb["timesheet_train"]
+    mycol = mydb["x_timesheet_train"]
     return mycol
 
 

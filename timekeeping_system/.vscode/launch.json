@@ -8,8 +8,11 @@
       "program": "${workspaceFolder}/app/main.py",
       "console": "integratedTerminal",
       "justMyCode": true,
+      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
       "env": {
-        "PYTHONPATH": "${workspaceFolder}/app"
+        "PYTHONPATH": "${workspaceFolder}",
+        "VIRTUAL_ENV": "${workspaceFolder}\\.venv",
+        "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
       }
     }
   ]

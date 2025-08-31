@@ -14,7 +14,7 @@ def get_database():
 
     load_dotenv()
     connection_string = os.getenv("MONGO_CONNECTION_STRING")
-    database_name = os.getenv("MONGO_DB_NAME", "timekeeping")
+    database_name = os.getenv("MONGO_DB_NAME", "x_timekeeping")
 
     if not connection_string:
         raise ValueError("Please set MONGO_CONNECTION_STRING in the environment or .env file")

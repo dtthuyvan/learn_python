@@ -5,7 +5,8 @@
       "name": "Python: Debug Excel API",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/app/main.py",
+      "program": "${workspaceFolder}/a2a_structure/host_agent/__main__.py",
+      // "program": "${workspaceFolder}/app/main.py",
       "console": "integratedTerminal",
       "justMyCode": true,
       "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
@@ -14,6 +15,16 @@
         "VIRTUAL_ENV": "${workspaceFolder}\\.venv",
         "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
       }
-    }
+    },
+    {
+            "name": "Debug Host Agent",
+            "type": "python",
+            "request": "launch",
+            "module": "a2a_structure.host_agent",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
   ]
 }

@@ -8,3 +8,5 @@
 /timekeeping_system/a2a/agents/full_attendance_agent/__pycache__
 *__pycache__
 */.vs/*
+/timekeeping_system/a2a_demo/host_agent_adk/a2a_friend_scheduling.egg-info
+/timekeeping_system/a2a_demo/karley_agent_adk/karley_scheduling_agent.egg-info

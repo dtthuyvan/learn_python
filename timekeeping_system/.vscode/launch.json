@@ -30,7 +30,7 @@
       "name": "Debug with uv run",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/a2a_demo/agents/timesheet_agent_adk/__main__.py",
+      "program": "${workspaceFolder}/a2a_demo/agents/employee_agent_adk/__main__.py",
       "console": "integratedTerminal",
       "env": {
         "UV_ACTIVE": "1"

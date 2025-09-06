@@ -47,6 +47,7 @@ class EmployeeAgentExecutor(AgentExecutor):
         session_id = session_obj.id
 
         async for event in self._run_agent(session_id, new_message):
+            print(f"4")
             if event.is_final_response():
                 parts = convert_genai_parts_to_a2a(
                     event.content.parts if event.content and event.content.parts else []
@@ -96,6 +97,7 @@ class EmployeeAgentExecutor(AgentExecutor):
         raise ServerError(error=UnsupportedOperationError())
 
     async def _upsert_session(self, session_id: str):
+        print(f"3")
         session = await self.runner.session_service.get_session(
             app_name=self.runner.app_name, user_id="employee_agent", session_id=session_id
         )
@@ -116,6 +118,7 @@ def convert_a2a_parts_to_genai(parts: list[Part]) -> list[types.Part]:
 
 
 def convert_a2a_part_to_genai(part: Part) -> types.Part:
+    print(f"2")
     """Convert a single A2A Part type into a Google Gen AI Part type."""
     root = part.root
     if isinstance(root, TextPart):
@@ -140,6 +143,7 @@ def convert_a2a_part_to_genai(part: Part) -> types.Part:
 
 def convert_genai_parts_to_a2a(parts: list[types.Part]) -> list[Part]:
     """Convert a list of Google Gen AI Part types into a list of A2A Part types."""
+    print(f"1")
     return [
         convert_genai_part_to_a2a(part)
         for part in parts

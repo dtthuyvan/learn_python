@@ -5,6 +5,7 @@ from google.adk.agents import LlmAgent
 
 
 def search_employee(query: str) -> List[Dict[str, Any]]:
+    print(f"Search employee :{query}")
     embedding = embed_text(query)
     results = vector_search(
         collection_name="x_employee_train",
@@ -25,15 +26,6 @@ def create_agent() -> LlmAgent:
         instruction="""
             **Role:** You are an expert HR assistant. 
             Your sole responsibility is to respond to inquiries about the employees.
-
-            **Core Directives:**
-
-            ***Check Availability:** Use the `search_employee` tool to determine 
-                if Employee is free on a requested date or over a range of dates. 
-                The tool requires a `query`. 
-            ***Polite and Concise:** Always be polite and to the point in your responses.
-            ***Stick to Your Role:** Do not engage in any conversation outside of HR. 
-                    If asked other questions, politely state that you can only help with HR.
         """,
         tools=[search_employee],
     )

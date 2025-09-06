@@ -1,7 +1,9 @@
 import os
 from datetime import datetime, timedelta
 import jwt
+from dotenv import load_dotenv
 
+load_dotenv()
 SECRET_KEY = os.getenv("JWT_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

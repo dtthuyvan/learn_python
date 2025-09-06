@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: karley-scheduling-agent
+Version: 0.1.0
+Summary: Karley's scheduling agent for the A2A project.
+Requires-Python: >=3.10
+Requires-Dist: a2a-sdk>=0.2.5
+Requires-Dist: google-adk>=1.2.1
+Requires-Dist: python-dotenv
+Requires-Dist: uvicorn
+Requires-Dist: google.generativeai
+Requires-Dist: pymongo

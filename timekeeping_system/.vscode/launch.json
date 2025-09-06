@@ -17,14 +17,24 @@
       }
     },
     {
-            "name": "Debug Host Agent",
-            "type": "python",
-            "request": "launch",
-            "module": "a2a_structure.host_agent",
-            "justMyCode": true,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}"
-            }
-        }
+      "name": "Debug Host Agent",
+      "type": "python",
+      "request": "launch",
+      "module": "a2a_structure.host_agent",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Debug with uv run",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/a2a_demo/agents/timesheet_agent_adk/__main__.py",
+      "console": "integratedTerminal",
+      "env": {
+        "UV_ACTIVE": "1"
+      }
+    }
   ]
 }

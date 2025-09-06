@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from collections.abc import AsyncGenerator
 
@@ -24,8 +23,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-class KarleyAgentExecutor(AgentExecutor):
-    """An AgentExecutor that runs Karley's ADK-based Agent."""
+class EmployeeAgentExecutor(AgentExecutor):
+    """An AgentExecutor that runs Employee's ADK-based Agent."""
 
     def __init__(self, runner: Runner):
         self.runner = runner
@@ -35,7 +34,7 @@ class KarleyAgentExecutor(AgentExecutor):
         self, session_id, new_message: types.Content
     ) -> AsyncGenerator[Event, None]:
         return self.runner.run_async(
-            session_id=session_id, user_id="karley_agent", new_message=new_message
+            session_id=session_id, user_id="employee_agent", new_message=new_message
         )
 
     async def _process_request(
@@ -98,12 +97,12 @@ class KarleyAgentExecutor(AgentExecutor):
 
     async def _upsert_session(self, session_id: str):
         session = await self.runner.session_service.get_session(
-            app_name=self.runner.app_name, user_id="karley_agent", session_id=session_id
+            app_name=self.runner.app_name, user_id="employee_agent", session_id=session_id
         )
         if session is None:
             session = await self.runner.session_service.create_session(
                 app_name=self.runner.app_name,
-                user_id="karley_agent",
+                user_id="employee_agent",
                 session_id=session_id,
             )
         if session is None:

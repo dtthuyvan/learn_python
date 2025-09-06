@@ -25,10 +25,6 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 
-from .pickleball_tools import (
-    book_pickleball_court,
-    list_court_availabilities,
-)
 from .remote_agent_connection import RemoteAgentConnections
 
 load_dotenv()
@@ -75,7 +71,7 @@ class HostAgent:
             for card in self.cards.values()
         ]
         print("agent_info:", agent_info)
-        self.agents = "\n".join(agent_info) if agent_info else "No friends found"
+        self.agents = "\n".join(agent_info) if agent_info else "No agents found"
 
     @classmethod
     async def create(
@@ -91,41 +87,47 @@ class HostAgent:
             model="gemini-2.5-flash",
             name="Host_Agent",
             instruction=self.root_instruction,
-            description="This Host agent orchestrates scheduling pickleball with friends.",
-            tools=[
-                self.send_message,
-                book_pickleball_court,
-                list_court_availabilities,
-            ],
+            description="This Host agent orchestrates time tracking and attendance",
+            tools=[self.send_message],
         )
 
     def root_instruction(self, context: ReadonlyContext) -> str:
         return f"""
-        **Role:** You are the Host Agent, an expert scheduler for pickleball games. Your primary function is to coordinate with friend agents to find a suitable time to play and then book a court.
+            **Role:** You are the Host Agent, an expert orchestrator for HR and Time Tracking operations. Your primary responsibility is to assist users with employee-related queries and attendance (timesheet) management.
 
-        **Core Directives:**
+            **Core Directives:**
 
-        *   **Initiate Planning:** When asked to schedule a game, first determine who to invite and the desired date range from the user.
-        *   **Task Delegation:** Use the `send_message` tool to ask each friend for their availability.
-            *   Frame your request clearly (e.g., "Are you available for pickleball between 2024-08-01 and 2024-08-03?").
-            *   Make sure you pass in the official name of the friend agent for each message request.
-        *   **Analyze Responses:** Once you have availability from all friends, analyze the responses to find common timeslots.
-        *   **Check Court Availability:** Before proposing times to the user, use the `list_court_availabilities` tool to ensure the court is also free at the common timeslots.
-        *   **Propose and Confirm:** Present the common, court-available timeslots to the user for confirmation.
-        *   **Book the Court:** After the user confirms a time, use the `book_pickleball_court` tool to make the reservation. This tool requires a `start_time` and an `end_time`.
-        *   **Transparent Communication:** Relay the final booking confirmation, including the booking ID, to the user. Do not ask for permission before contacting friend agents.
-        *   **Tool Reliance:** Strictly rely on available tools to address user requests. Do not generate responses based on assumptions.
-        *   **Readability:** Make sure to respond in a concise and easy to read format (bullet points are good).
-        *   Each available agent represents a friend. So Bob_Agent represents Bob.
-        *   When asked for which friends are available, you should return the names of the available friends (aka the agents that are active).
-        *   When get
+            *   **Employee Management:**
+                - Answer questions related to employees, such as:
+                    * Total number of employees.
+                    * Gender distribution (how many male, how many female).
+                    * Birthdays, age, team, department.
+                - Support filtering by conditions (e.g., employees in Team A, born in September).
 
-        **Today's Date (YYYY-MM-DD):** {datetime.now().strftime("%Y-%m-%d")}
+            *   **Time Tracking (Timesheet) Management:**
+                - Answer questions about working hours:
+                    * Did employees check in on time?
+                    * Did they complete the required working hours?
+                    * Did they work overtime (OT)? How many hours?
+                - Provide summaries by day, week, month, or for specific employees.
 
-        <Available Agents>
-        {self.agents}
-        </Available Agents>
-        """
+            *   **Handling Scenarios:**
+                - When receiving a query, determine whether it relates to **Employee Info** or **Time Tracking**.
+                - Query data using available tools or APIs (do not assume data).
+                - Respond concisely and clearly (bullet points are recommended).
+
+            *   **Principles:**
+                - Always rely on actual data from tools.
+                - Do not make assumptions when data is missing.
+                - Communicate in a clear and transparent manner.
+
+            **Today's Date (YYYY-MM-DD):** {datetime.now().strftime("%Y-%m-%d")}
+
+            <Available Employees>
+            {self.agents}
+            </Available Employees>
+            """
+
 
     async def stream(
         self, query: str, session_id: str
@@ -170,7 +172,7 @@ class HostAgent:
                 }
 
     async def send_message(self, agent_name: str, task: str, tool_context: ToolContext):
-        """Sends a task to a remote friend agent."""
+        """Sends a task to a remote time tracking and attendance agent."""
         if agent_name not in self.remote_agent_connections:
             raise ValueError(f"Agent {agent_name} not found")
         client = self.remote_agent_connections[agent_name]
@@ -223,9 +225,8 @@ def _get_initialized_host_agent_sync():
     async def _async_main():
         # Hardcoded URLs for the friend agents
         friend_agent_urls = [
-            "http://localhost:10002",  # Karley's Agent
-            "http://localhost:10003",  # Nate's Agent
-            "http://localhost:10004",  # Kaitlynn's Agent
+            "http://localhost:10002",  # Employee's Agent
+            "http://localhost:10003",  # Time tracking Agent
         ]
 
         print("initializing host agent")

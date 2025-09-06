@@ -32,7 +32,7 @@ class MissingAPIKeyError(Exception):
 
 @click.command()
 @click.option("--host", default="localhost", help="Host to run the server on")
-@click.option("--port", default=10002, help="Port to run the server on")
+@click.option("--port", default=10003, help="Port to run the server on")
 def main(host, port):
     """Starts the TimeSheet agent server."""
     try:

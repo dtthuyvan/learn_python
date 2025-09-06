@@ -8,6 +8,8 @@ dependencies = [
     "google-adk>=1.2.1",
     "python-dotenv",
     "uvicorn",
+    "google.generativeai",
+    "pymongo"
 ] 
 [tool.setuptools]
 py-modules = ["agent", "agent_executor", "main"]
